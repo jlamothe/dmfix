@@ -26,7 +26,8 @@ module Helpers (
   textToUrl,
   urlToText,
   makeHttps,
-  editHost
+  editHost,
+  dropParam
   ) where
 
 import qualified Data.List as L
@@ -83,6 +84,17 @@ editHost
 editHost f url = do
   host' <- f $ host url
   Just url { host = host' }
+
+-- | Drop a parameter from a 'Url' (if present)
+dropParam
+  :: String
+  -- ^ the parameter to be dropped
+  -> Url
+  -- ^ the 'Url' being modified
+  -> Url
+dropParam pName url = let
+  params' = filter (\p -> fst p /= pName) $ params url
+  in url { params = params' }
 
 subToUrl :: T.Text -> Maybe Url
 subToUrl text = case T.splitOn "://" text of

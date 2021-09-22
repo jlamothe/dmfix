@@ -35,6 +35,7 @@ spec = do
   urlToTextSpec
   makeHttpsSpec
   editHostSpec
+  dropParamSpec
 
 textToUrlSpec :: Spec
 textToUrlSpec = describe "textToUrl" $ mapM_
@@ -98,6 +99,29 @@ editHostSpec = describe "editHost" $ mapM_
   where
     reversed = Just simpleUrl
       { host = reverse $ host simpleUrl }
+
+dropParamSpec :: Spec
+dropParamSpec = describe "dropParam" $ mapM_
+  ( \(desc, p, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      dropParam p url `shouldBe` expected
+  )
+
+  --  description,   param, expected
+  [ ( "with val",    "a",   withVal    )
+  , ( "without val", "b",   withoutVal )
+  , ( "not present", "c",   url        )
+  ]
+
+  where
+    url = simpleUrl
+      { params =
+        [ ("a", Just "1")
+        , ("b", Nothing)
+        ]
+      }
+    withVal    = simpleUrl { params = [("b", Nothing)] }
+    withoutVal = simpleUrl { params = [("a", Just "1")] }
 
 simpleTxt :: T.Text
 simpleTxt = "http://example.com/"
