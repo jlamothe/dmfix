@@ -36,6 +36,7 @@ spec = do
   makeHttpsSpec
   editHostSpec
   dropParamSpec
+  editParamSpec
 
 textToUrlSpec :: Spec
 textToUrlSpec = describe "textToUrl" $ mapM_
@@ -122,6 +123,31 @@ dropParamSpec = describe "dropParam" $ mapM_
       }
     withVal    = simpleUrl { params = [("b", Nothing)] }
     withoutVal = simpleUrl { params = [("a", Just "1")] }
+
+editParamSpec :: Spec
+editParamSpec = describe "editParam" $ mapM_
+  ( \(desc, pName, f, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      editParam pName f url `shouldBe` expected
+  )
+
+  --  description,     param name, function,       expected
+  [ ( "reverse",       "a",        Just . reverse, Just reversed )
+  , ( "fail",          "a",        const Nothing,  Nothing       )
+  , ( "reverse empty", "c",        Just . reverse, Just url      )
+  , ( "fail empty",    "c",        const Nothing,  Just url      )
+  , ( "no reverse",    "d",        Just . reverse, Just url      )
+  , ( "no fail",       "d",        const Nothing,  Just url      )
+  ]
+
+  where
+    url      = simpleUrl { params = mkParams "foo" }
+    reversed = simpleUrl { params = mkParams "oof" }
+    mkParams val =
+      [ ( "a", Just val   )
+      , ( "b", Just "bar" )
+      , ( "c", Nothing    )
+      ]
 
 simpleTxt :: T.Text
 simpleTxt = "http://example.com/"

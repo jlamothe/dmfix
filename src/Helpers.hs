@@ -27,7 +27,8 @@ module Helpers (
   urlToText,
   makeHttps,
   editHost,
-  dropParam
+  dropParam,
+  editParam
   ) where
 
 import qualified Data.List as L
@@ -95,6 +96,27 @@ dropParam
 dropParam pName url = let
   params' = filter (\p -> fst p /= pName) $ params url
   in url { params = params' }
+
+-- | Edit a parameter
+editParam
+  :: String
+  -- ^ the parameter name
+  -> (String -> Maybe String)
+  -- ^ the transformation function
+  -> Url
+  -- ^ the 'Url' being edited
+  -> Maybe Url
+editParam pName f url = do
+  params' <- mapM
+    ( \case
+      (name, Just val) -> if name == pName
+        then do
+          val' <- f val
+          Just (name, Just val')
+        else Just (name, Just val)
+      x -> Just x
+    ) $ params url
+  Just url { params = params' }
 
 subToUrl :: T.Text -> Maybe Url
 subToUrl text = case T.splitOn "://" text of
