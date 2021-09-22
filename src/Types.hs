@@ -27,7 +27,6 @@ module Types (
 data Url = Url
   { protocol :: String
   , host     :: String
-  , port     :: Int
   , path     :: [String]
   , params   :: [(String, Maybe String)]
   , anchor   :: Maybe String
