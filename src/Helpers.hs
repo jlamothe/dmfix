@@ -28,7 +28,8 @@ module Helpers (
   makeHttps,
   editHost,
   dropParam,
-  editParam
+  editParam,
+  incStrBy
   ) where
 
 import qualified Data.List as L
@@ -117,6 +118,18 @@ editParam pName f url = do
       x -> Just x
     ) $ params url
   Just url { params = params' }
+
+-- | Increment a 'String' representation of an 'Integer' by a given
+-- amount (if possible)
+incStrBy
+  :: Integer
+  -- ^ the amount to increment by
+  -> String
+  -- ^ the 'String' to increment
+  -> Maybe String
+incStrBy n str = case reads str of
+  [(m, "")] -> Just $ show $ n + m
+  _         -> Nothing
 
 subToUrl :: T.Text -> Maybe Url
 subToUrl text = case T.splitOn "://" text of

@@ -37,6 +37,7 @@ spec = do
   editHostSpec
   dropParamSpec
   editParamSpec
+  incStrBySpec
 
 textToUrlSpec :: Spec
 textToUrlSpec = describe "textToUrl" $ mapM_
@@ -148,6 +149,20 @@ editParamSpec = describe "editParam" $ mapM_
       , ( "b", Just "bar" )
       , ( "c", Nothing    )
       ]
+
+incStrBySpec :: Spec
+incStrBySpec = describe "incStrBy" $ mapM_
+  ( \(n, str, expected) ->
+    context (show str ++ " + " ++ show n) $
+      it ("should be " ++ show expected) $
+        incStrBy n str `shouldBe` expected
+  )
+
+  --  number, string, expected
+  [ ( 2,      "3",    Just "5" )
+  , ( 2,      "foo",  Nothing  )
+  , ( 2,      "",     Nothing  )
+  ]
 
 simpleTxt :: T.Text
 simpleTxt = "http://example.com/"
