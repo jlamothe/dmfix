@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 module Helpers (
   textToUrl,
   urlToText,
+  editHost
   ) where
 
 import qualified Data.List as L
@@ -61,6 +62,17 @@ urlToText url = T.pack $
     anchorStr = case anchor url of
       Just str -> "#" ++ str
       Nothing  -> ""
+
+-- | Edit the 'host' value of a 'Url'
+editHost
+  :: (String -> Maybe String)
+  -- ^ the transformation function
+  -> Url
+  -- ^ the Url being modified
+  -> Maybe Url
+editHost f url = do
+  host' <- f $ host url
+  Just url { host = host' }
 
 subToUrl :: T.Text -> Maybe Url
 subToUrl text = case T.splitOn "://" text of

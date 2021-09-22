@@ -33,6 +33,7 @@ spec :: Spec
 spec = do
   textToUrlSpec
   urlToTextSpec
+  editHostSpec
 
 textToUrlSpec :: Spec
 textToUrlSpec = describe "textToUrl" $ mapM_
@@ -63,6 +64,22 @@ urlToTextSpec = describe "urlToText" $ mapM_
   , ( paramsUrl, paramsTxt )
   , ( anchorUrl, anchorTxt )
   ]
+
+editHostSpec ::Spec
+editHostSpec = describe "editHost" $ mapM_
+  ( \(desc, f, url, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      editHost f url `shouldBe` expected
+  )
+
+  --  description, function,       url,       expected
+  [ ( "reverse",   Just . reverse, simpleUrl, reversed )
+  , ( "fail",      const Nothing,  simpleUrl, Nothing  )
+  ]
+
+  where
+    reversed = Just simpleUrl
+      { host = reverse $ host simpleUrl }
 
 simpleTxt :: T.Text
 simpleTxt = "http://example.com/"
