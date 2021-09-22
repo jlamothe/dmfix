@@ -21,7 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -}
 
 module Types (
-  Url (..)
+  Url (..),
+  newUrl
   ) where
 
 data Url = Url
@@ -31,5 +32,8 @@ data Url = Url
   , params   :: [(String, Maybe String)]
   , anchor   :: Maybe String
   } deriving (Eq, Show)
+
+newUrl :: Url
+newUrl = Url "" "" [] [] Nothing
 
 --jl
