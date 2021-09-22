@@ -29,6 +29,7 @@ module Helpers (
   editHost,
   dropParam,
   editParam,
+  incParamBy,
   incStrBy
   ) where
 
@@ -118,6 +119,17 @@ editParam pName f url = do
       x -> Just x
     ) $ params url
   Just url { params = params' }
+
+-- | Increment a parameter of a 'Url' by a given amount (if possible)
+incParamBy
+  :: Integer
+  -- ^ the amount to increment by
+  -> String
+  -- ^ the parameter
+  -> Url
+  -- ^ the 'Url' to edit
+  -> Maybe Url
+incParamBy n p = editParam p $ incStrBy n
 
 -- | Increment a 'String' representation of an 'Integer' by a given
 -- amount (if possible)

@@ -37,6 +37,7 @@ spec = do
   editHostSpec
   dropParamSpec
   editParamSpec
+  incParamBySpec
   incStrBySpec
 
 textToUrlSpec :: Spec
@@ -148,6 +149,29 @@ editParamSpec = describe "editParam" $ mapM_
       [ ( "a", Just val   )
       , ( "b", Just "bar" )
       , ( "c", Nothing    )
+      ]
+
+incParamBySpec :: Spec
+incParamBySpec = describe "incParamBy" $ mapM_
+  ( \(desc, n, pName, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      incParamBy n pName url `shouldBe` expected
+  )
+
+  --  description,   number, param, expected
+  [ ( "+1",          1,      "a",   Just $ urlWith "3" )
+  , ( "+2",          2,      "a",   Just $ urlWith "4" )
+  , ( "non-numeric", 1,      "c",   Nothing            )
+  , ( "missing",     1,      "d",   Just url           )
+  ]
+
+  where
+    url        = urlWith "2"
+    urlWith n  = simpleUrl { params = mkParams n }
+    mkParams n =
+      [ ( "a", Just n     )
+      , ( "b", Just "2"   )
+      , ( "c", Just "foo" )
       ]
 
 incStrBySpec :: Spec
