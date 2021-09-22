@@ -25,6 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 module Helpers (
   textToUrl,
   urlToText,
+  makeHttps,
   editHost
   ) where
 
@@ -62,6 +63,15 @@ urlToText url = T.pack $
     anchorStr = case anchor url of
       Just str -> "#" ++ str
       Nothing  -> ""
+
+-- | Convert HTTP to HTTPS (if necessary)
+makeHttps :: Url -> Maybe Url
+makeHttps url = if any ($ protocol url)
+  [ (== "https")
+  , (== "http")
+  ]
+  then Just url { protocol = "https" }
+  else Nothing
 
 -- | Edit the 'host' value of a 'Url'
 editHost

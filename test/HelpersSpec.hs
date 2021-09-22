@@ -33,6 +33,7 @@ spec :: Spec
 spec = do
   textToUrlSpec
   urlToTextSpec
+  makeHttpsSpec
   editHostSpec
 
 textToUrlSpec :: Spec
@@ -64,6 +65,23 @@ urlToTextSpec = describe "urlToText" $ mapM_
   , ( paramsUrl, paramsTxt )
   , ( anchorUrl, anchorTxt )
   ]
+
+makeHttpsSpec :: Spec
+makeHttpsSpec = describe "makeHttps" $ mapM_
+  ( \(desc, input, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      makeHttps input `shouldBe` expected
+  )
+
+  --  description, input,         expected
+  [ ( "HTTP",      simpleUrl,     Just https )
+  , ( "HTTPS",     https,         Just https )
+  , ( "FTP",       urlWith "ftp", Nothing    )
+  ]
+
+  where
+    https     = urlWith "https"
+    urlWith p = simpleUrl { protocol = p }
 
 editHostSpec ::Spec
 editHostSpec = describe "editHost" $ mapM_
