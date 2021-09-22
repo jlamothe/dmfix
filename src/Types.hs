@@ -25,14 +25,21 @@ module Types (
   newUrl
   ) where
 
+-- | Defines the basic parts of a URL
 data Url = Url
   { protocol :: String
+  -- ^ the protocol, e.g.: HTTPS
   , host     :: String
+  -- ^ the hostname (and optional port)
   , path     :: [String]
+  -- ^ the path as a list of nested directories
   , params   :: [(String, Maybe String)]
+  -- ^ the parameters and their optional values
   , anchor   :: Maybe String
+  -- ^ the anchor text
   } deriving (Eq, Show)
 
+-- | default value for a 'Url'
 newUrl :: Url
 newUrl = Url "" "" [] [] Nothing
 
