@@ -39,6 +39,7 @@ spec = do
   editParamSpec
   editAnchorSpec
   incParamBySpec
+  incAnchorBySpec
   incStrBySpec
 
 textToUrlSpec :: Spec
@@ -193,6 +194,22 @@ incParamBySpec = describe "incParamBy" $ mapM_
       , ( "b", Just "2"   )
       , ( "c", Just "foo" )
       ]
+
+incAnchorBySpec :: Spec
+incAnchorBySpec = describe "incAnchorBy" $ mapM_
+  ( \(desc, n, url, expected) -> context desc $
+    it ("should be " ++ show expected) $
+      incAnchorBy n url `shouldBe` expected
+  )
+
+  --  description,   number, url,           expected
+  [ ( "+1",          1,      urlWith "1",   Just $ urlWith "2" )
+  , ( "+2",          2,      urlWith "1",   Just $ urlWith "3" )
+  , ( "empty",       1,      simpleUrl,     Just simpleUrl     )
+  , ( "non-numeric", 1,      urlWith "foo", Nothing            )
+  ]
+
+  where urlWith str = simpleUrl { anchor = Just str }
 
 incStrBySpec :: Spec
 incStrBySpec = describe "incStrBy" $ mapM_

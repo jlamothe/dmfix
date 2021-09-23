@@ -31,6 +31,7 @@ module Helpers (
   editParam,
   editAnchor,
   incParamBy,
+  incAnchorBy,
   incStrBy
   ) where
 
@@ -144,6 +145,15 @@ incParamBy
   -- ^ the 'Url' to edit
   -> Maybe Url
 incParamBy n p = editParam p $ incStrBy n
+
+-- | Increment an anchor by a given amount (if possible)
+incAnchorBy
+  :: Integer
+  -- ^ the amount to increment by
+  -> Url
+  -- ^ the 'Url' to edit
+  -> Maybe Url
+incAnchorBy n = editAnchor $ incStrBy n
 
 -- | Increment a 'String' representation of an 'Integer' by a given
 -- amount (if possible)
