@@ -37,6 +37,7 @@ spec = do
   editHostSpec
   dropParamSpec
   editParamSpec
+  editAnchorSpec
   incParamBySpec
   incStrBySpec
 
@@ -150,6 +151,25 @@ editParamSpec = describe "editParam" $ mapM_
       , ( "b", Just "bar" )
       , ( "c", Nothing    )
       ]
+
+editAnchorSpec :: Spec
+editAnchorSpec = describe "editAnchor" $ mapM_
+  ( \(desc, f, url, expected) -> context desc $
+    it ("should be " ++ show url) $
+      editAnchor f url `shouldBe` expected
+  )
+
+  --  description,     function,       url,       expected
+  [ ( "reverse",       Just . reverse, fooUrl,    Just reversedUrl )
+  , ( "fail",          const Nothing,  fooUrl,    Nothing          )
+  , ( "reverse empty", Just . reverse, simpleUrl, Just simpleUrl   )
+  , ( "fail empty",    const Nothing,  simpleUrl, Just simpleUrl   )
+  ]
+
+  where
+    fooUrl      = urlWith "foo"
+    reversedUrl = urlWith "oof"
+    urlWith a   = simpleUrl { anchor = Just a }
 
 incParamBySpec :: Spec
 incParamBySpec = describe "incParamBy" $ mapM_

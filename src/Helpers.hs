@@ -29,6 +29,7 @@ module Helpers (
   editHost,
   dropParam,
   editParam,
+  editAnchor,
   incParamBy,
   incStrBy
   ) where
@@ -119,6 +120,19 @@ editParam pName f url = do
       x -> Just x
     ) $ params url
   Just url { params = params' }
+
+-- | Edit an anchor
+editAnchor
+  :: (String -> Maybe String)
+  -- ^ the transformation function
+  -> Url
+  -- ^ the 'Url' being edited
+  -> Maybe Url
+editAnchor f url = case anchor url of
+  Just a -> do
+    a' <- f a
+    Just url { anchor = Just a' }
+  Nothing -> Just url
 
 -- | Increment a parameter of a 'Url' by a given amount (if possible)
 incParamBy
