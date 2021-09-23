@@ -32,7 +32,8 @@ module Helpers (
   editAnchor,
   incParamBy,
   incAnchorBy,
-  incStrBy
+  incStrBy,
+  updateLink
   ) where
 
 import qualified Data.List as L
@@ -166,6 +167,22 @@ incStrBy
 incStrBy n str = case reads str of
   [(m, "")] -> Just $ show $ n + m
   _         -> Nothing
+
+-- | Update an old message board link
+updateLink :: T.Text -> Maybe T.Text
+updateLink text = textToUrl text
+  >>= makeHttps
+  >>= editHost
+    ( \case
+      "www.mormondiscussions.com" -> Just "www.discussmormonism.com"
+      "mormondiscussions.com"     -> Just "discussmormonism.com"
+      _                           -> Nothing
+    )
+  >>= Just . dropParam "f"
+  >>= incParamBy 100000 "t"
+  >>= incParamBy 1500000 "p"
+  >>= incAnchorBy 1500000
+  >>= Just . urlToText
 
 subToUrl :: T.Text -> Maybe Url
 subToUrl text = case T.splitOn "://" text of

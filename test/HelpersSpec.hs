@@ -41,6 +41,7 @@ spec = do
   incParamBySpec
   incAnchorBySpec
   incStrBySpec
+  updateLinkSpec
 
 textToUrlSpec :: Spec
 textToUrlSpec = describe "textToUrl" $ mapM_
@@ -223,6 +224,36 @@ incStrBySpec = describe "incStrBy" $ mapM_
   [ ( 2,      "3",    Just "5" )
   , ( 2,      "foo",  Nothing  )
   , ( 2,      "",     Nothing  )
+  ]
+
+updateLinkSpec :: Spec
+updateLinkSpec = describe "updateLink" $ mapM_
+  ( \(input, expected) -> context (show input) $
+    it ("should be " ++ show expected) $
+      updateLink input `shouldBe` expected
+  )
+
+  [ ( "http://www.mormondiscussions.com/viewtopic.php?f=1&t=34500"
+    , Just "https://www.discussmormonism.com/viewtopic.php?t=134500"
+    )
+  , ( "http://www.mormondiscussions.com/viewtopic.php?f=1&t=696&p=96969#96969"
+    , Just "https://www.discussmormonism.com/viewtopic.php?t=100696&p=1596969#1596969"
+    )
+  , ( "http://www.mormondiscussions.com/viewtopic.php"
+    , Just "https://www.discussmormonism.com/viewtopic.php"
+    )
+  , ( "http://mormondiscussions.com/viewtopic.php?f=1&t=34500"
+    , Just "https://discussmormonism.com/viewtopic.php?t=134500"
+    )
+  , ( "http://mormondiscussions.com/viewtopic.php?f=1&t=696&p=96969#96969"
+    , Just "https://discussmormonism.com/viewtopic.php?t=100696&p=1596969#1596969"
+    )
+  , ( "http://mormondiscussions.com/viewtopic.php"
+    , Just "https://discussmormonism.com/viewtopic.php"
+    )
+  , ( "http://example.com"
+    , Nothing
+    )
   ]
 
 simpleTxt :: T.Text
