@@ -25,15 +25,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 module Handler.Home where
 
 import Import
+import Helpers
+
+title :: Text
+title = "DiscussMormonism.com Link Fixer"
+
+linkForm :: Form Text
+linkForm = renderDivs $
+  areq urlField "Old URL" Nothing
 
 getHomeR :: Handler Html
-getHomeR = defaultLayout $ do
-  setTitle "Welcome To Yesod!"
-  $(widgetFile "homepage")
+getHomeR = do
+  (widget, enctype) <- generateFormPost linkForm
+  defaultLayout $ do
+    setTitle $ toHtml title
+    $(widgetFile "homepage")
 
 postHomeR :: Handler Html
-postHomeR = defaultLayout $ do
-  setTitle "Welcome To Yesod!"
-  $(widgetFile "homepage")
+postHomeR = do
+  ((result, _), _) <- runFormPost linkForm
+  case result of
+    FormSuccess l -> case updateLink l of
+      Just l' -> redirect l'
+      Nothing -> do
+        setMessage "Invalid link"
+        redirect HomeR
+    _ -> do
+      setMessage "Something went wrong"
+      redirect HomeR
 
 --jl

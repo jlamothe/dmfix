@@ -1,5 +1,11 @@
-<div .masthead>
-  <div .container>
-    <div .row>
-      <h1 .header>
-        DiscussMormonism.com Link Fixer
+<div .container>
+  <div .row>
+    <h1 .header>
+      #{title}
+    <p>
+      This site is not affiliated with
+      <a href="https://discussmormonism.com">DiscussMormonism.com
+      and is provided as a convenience. It takes links from the old MormonDiscussions.com site and redirects them to the current message board.
+    <form method=post enctype=#{enctype}>
+      ^{widget}
+      <button>Go!
